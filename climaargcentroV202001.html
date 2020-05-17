@@ -1,0 +1,79 @@
+<html>
+<head>
+    		<!-- JQuery -->
+	<!--<script src="/Lib/jquery/jquery-3.2.1.min.js" crossorigin="anonymous"></script>-->
+	<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <div id="mainContent">
+    </div>
+
+</body>
+<script>
+
+	function checkImage(imageSrc, good, bad) {
+		var img = new Image();
+		img.onload = good; 
+		img.onerror = bad;
+		img.src = imageSrc;
+	}
+
+    var ts=Date.now();
+    var imgIdx=1;
+    //var baseSource="https://estaticos.smn.gob.ar/vmsr/goes16/mtopcentro_";
+	var baseSource="https://estaticos.smn.gob.ar/vmsr/satelite/TOP_C13_ARG_ALTA_";
+	//20200121_214016Z.jpg
+
+	var d = new Date(); 
+	d.setMinutes(d.getMinutes() - 60*6);
+	//d = Date(d.getTime() - 120*60000);
+	var totalFound =0;
+    var i=1;
+    for (imgIdx=1;imgIdx<=6*12;imgIdx++){
+		/*
+		if (imgIdx<=9) {
+            newSource=baseSource+"0"+imgIdx+".jpg";
+        } else {
+            newSource=baseSource+imgIdx+".jpg";
+		}
+		*/
+		var imgSuffix=d.toISOString().replace("-","").replace("-","").replace("T","_").replace(":","");
+		imgSuffix=imgSuffix.substring(0,12)+"016Z.jpg";
+		d.setMinutes(d.getMinutes() + 10);
+        newSource=baseSource+imgSuffix; //"?ts="+ts;
+		console.log(d.toISOString()+' - '+imgSuffix+" - "+newSource);
+		
+		checkImage(newSource, 
+			function(){ 
+				//debugger;
+				totalFound=totalFound + 1;
+				var imgObj='<img id="imgContainer'+totalFound+'" style="display: none; width:100%;height:100%;" src="';
+				imgObj=imgObj+newSource;
+				imgObj=imgObj+'"></img>';
+				//$("#mainContent").append(imgObj);
+				console.log("Found: "+newSource); 
+			}, 
+			function(){ console.log("Not found: "+newSource); } );
+
+		
+	}
+	/*
+    imgIdx=0;
+    setInterval(function(){ 
+            imgIdx++;
+            var imgIdxPrev;
+            imgIdxPrev=imgIdx-1;
+            if (imgIdx==totalFound) {
+                imgIdx=1;
+                imgIdxPrev=totalFound-1;
+            }
+            $("#imgContainer"+imgIdxPrev).hide();
+            $("#imgContainer"+imgIdx).show();
+        }, 300);
+	*/
+</script>
+</html>
